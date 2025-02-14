@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>QR Code Generator</h1>
+        <form id="qr-form">
+            <input type="text" id="data" placeholder="Enter data to encode" required>
+            <button type="submit">Generate QR Code</button>
+        </form>
+        <div id="qr-code"></div>
+    </div>
+    <footer>
+        Made with ❤️ by <a href="#" target="_blank">Anitej</a>
+    </footer>
+
+    <script>
+        document.getElementById('qr-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = document.getElementById('data').value;
+
+            const response = await fetch('/generate_qr', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ data }),
+            });
+
+            if (response.ok) {
+                const imageBlob = await response.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+                document.getElementById('qr-code').innerHTML = `<img src="${imageUrl}" alt="QR Code">`;
+            } else {
+                alert('Failed to generate QR code');
+            }
+        });
+    </script>
+</body>
+</html>
